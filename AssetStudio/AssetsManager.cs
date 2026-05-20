@@ -414,7 +414,15 @@ namespace AssetStudio {
 							obj = new RectTransform(objectReader);
 							break;
 						case ClassIDType.Shader:
-							obj = new Shader(objectReader);
+							try {
+								obj = new Shader(objectReader);
+							}
+							catch (EndOfStreamException) {
+								// Arknights: Shader binary format often incompatible,
+								// silently fall back to generic object.
+								objectReader.Position = objectReader.byteStart;
+								obj = new Object(objectReader);
+							}
 							break;
 						case ClassIDType.SkinnedMeshRenderer:
 							obj = new SkinnedMeshRenderer(objectReader);
