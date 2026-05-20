@@ -194,7 +194,8 @@ namespace AssetStudio {
 
 		private void ReadBlocksInfoAndDirectory(FileReader reader) {
 			byte[] blocksInfoBytes;
-			if (m_Header.version >= 7) {
+			// Arknights: use parsed revision instead of tampered version field.
+			if (NeedsBlockAlignment(m_Header.unityRevision)) {
 				reader.AlignStream(16);
 			}
 			if ((m_Header.flags & ArchiveFlags.BlocksInfoAtTheEnd) != 0) {
@@ -365,6 +366,28 @@ namespace AssetStudio {
 				}
 			}
 			blocksStream.Position = 0;
+		}
+
+		// Arknights fix: use parsed Unity revision (e.g. "2021.3.39f1")
+		// instead of tampered raw version field to determine alignment.
+		// Unity 2019.4.15+ requires 16-byte block alignment.
+		// Ref: Perfare/AssetStudio#869, isHarryh/Ark-Unpacker
+		private static bool NeedsBlockAlignment(string unityRevision) {
+			if (string.IsNullOrEmpty(unityRevision))
+				return false;
+			try {
+				var match = System.Text.RegularExpressions.Regex.Match(
+					unityRevision, @"(\d+)\.(\d+)\.(\d+)");
+				if (match.Success) {
+					int year = int.Parse(match.Groups[1].Value);
+					int major = int.Parse(match.Groups[2].Value);
+					int minor = int.Parse(match.Groups[3].Value);
+					if (year > 2019) return true;
+					if (year == 2019 && major > 4) return true;
+					if (year == 2019 && major == 4 && minor >= 15) return true;
+				}
+			} catch { }
+			return false;
 		}
 	}
 }
