@@ -11,6 +11,20 @@ This fork is tested only on Arknights, and problems about other apps will be ign
 * New featrue: UI Language Setting.
 * Enhancement: Improved preview of mesh, audio.
 
+## Arknights Compatibility Fixes (HX0922 Fork)
+
+This fork includes fixes for Arknights asset bundle quirks:
+
+* **Bundle alignment fix**: Arknights tampers with the raw `version` field in UnityFS bundles. Use parsed Unity revision string (e.g. `"2021.3.39f1"`) instead to determine 16-byte block alignment. Fixes loading of `[pack]common.ab` and similar shared bundles. (Ref: Perfare/AssetStudio#869)
+
+* **LZ4AK decompression**: Arknights v2.5.04+ uses a custom LZHAM variant (LZ4AK) that byte-swaps nibbles/offsets before LZ4 decompression. Handled in `BundleFile.ReadBlocks()`.
+
+* **Shader compatibility**: Arknights' Shader binary format may be incompatible with AssetStudio's parser. Silently falls back to generic Object instead of logging errors.
+
+## Prebuilt Release
+
+See [Releases](https://github.com/HX0922/AssetStudio-Arknights/releases) for prebuilt Windows x64 binaries.
+
 [日志](./doc/changes.zh.md)
 
 # Original Readme Below
