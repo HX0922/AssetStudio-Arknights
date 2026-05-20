@@ -49,14 +49,24 @@ AssetStudio is a tool for exploring, extracting and exporting assets and assetbu
   * **MonoBehaviour** : json
   * **Animator** : export to FBX file with bound AnimationClip
 
-## Requirements
+## Requirements (Prebuilt Binary)
 
-- AssetStudio.net472
-   - [.NET Framework 4.7.2](https://dotnet.microsoft.com/download/dotnet-framework/net472)
-- AssetStudio.net5
-   - [.NET Desktop Runtime 5.0](https://dotnet.microsoft.com/download/dotnet/5.0)
-- AssetStudio.net6
-   - [.NET Desktop Runtime 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
+The prebuilt release in [Releases](https://github.com/HX0922/AssetStudio-Arknights/releases) is a **framework-dependent** Windows x64 build.
+
+- [.NET Desktop Runtime 8.0 (x64)](https://dotnet.microsoft.com/download/dotnet/8.0) — download the **Windows x64** installer under ".NET Desktop Runtime"
+- Windows 10/11 x64
+
+## Build
+
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- Windows: Visual Studio 2022+ with C++ toolchain (for `AssetStudioFBXNative` and `Texture2DDecoder`)
+- Linux cross-compile: add `-p:EnableWindowsTargeting=true`, use prebuilt native DLLs from a prior Windows build for `AssetStudioFBXNative` and `Texture2DDecoder`
+
+```
+dotnet publish AssetStudioGUI/AssetStudioGUI.csproj -c Release -r win-x64 -p:EnableWindowsTargeting=true
+```
+
+- **AssetStudioFBXNative** requires [FBX SDK 2020.2.1](https://www.autodesk.com/developer-network/platform-technologies/fbx-sdk-2020-2-1) when building on Windows
 
 
 ## Usage
@@ -94,11 +104,6 @@ When you select an asset of the MonoBehaviour type for the first time, AssetStud
 #### For Il2Cpp
 
 First, use my another program [Il2CppDumper](https://github.com/Perfare/Il2CppDumper) to generate dummy dll, then when using AssetStudio to select the assembly directory, select the dummy dll folder.
-
-## Build
-
-* Visual Studio 2022 or newer
-* **AssetStudioFBXNative** uses [FBX SDK 2020.2.1](https://www.autodesk.com/developer-network/platform-technologies/fbx-sdk-2020-2-1), before building, you need to install the FBX SDK and modify the project file, change include directory and library directory to point to the FBX SDK directory
 
 ## Open source libraries used
 
